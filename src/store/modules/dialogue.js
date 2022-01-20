@@ -17,53 +17,54 @@ export default {
   mutations: {
     // 更新对话
     UPDATE_DIALOGUE_MESSAGE(state, resource) {
-      state.records = []
-      state.talk_type = parseInt(resource.talk_type)
-      state.receiver_id = parseInt(resource.receiver_id)
-      state.is_robot = parseInt(resource.is_robot)
+      console.log("更新对话", resource);
+      state.records = [];
+      state.talk_type = parseInt(resource.talk_type);
+      state.receiver_id = parseInt(resource.receiver_id);
+      state.is_robot = parseInt(resource.is_robot);
 
-      if (state.talk_type === 0 || state.receiver_id === 0) {
-        state.index_name = null
-      } else {
-        state.index_name = resource.talk_type + '_' + resource.receiver_id
-      }
+      /**
+       * receiver_id 就是 好友id
+       * 比如 a 和 b 聊天  receiver_id = b的id
+       */
+      state.index_name = (resource.talk_type || 1) + "_" + resource.receiver_id;
     },
 
     // 数组头部压入对话记录
     UNSHIFT_DIALOGUE(state, records) {
-      state.records.unshift(...records)
+      state.records.unshift(...records);
     },
 
     // 推送对话记录
     PUSH_DIALOGUE(state, record) {
-      state.records.push(record)
+      state.records.push(record);
     },
 
     // 更新对话记录
     UPDATE_DIALOGUE(state, resource) {
       for (let i in state.records) {
         if (state.records[i].id === resource.id) {
-          Object.assign(state.records[i], resource)
-          break
+          Object.assign(state.records[i], resource);
+          break;
         }
       }
     },
 
     // 删除对话记录
     DELETE_DIALOGUE(state, index) {
-      state.records.splice(index, 1)
+      state.records.splice(index, 1);
     },
 
     BATCH_DELETE_DIALOGUE(state, ids) {
-      ids.forEach(record_id => {
-        let index = state.records.findIndex(item => item.id == record_id)
-        if (index >= 0) state.records.splice(index, 1)
-      })
+      ids.forEach((record_id) => {
+        let index = state.records.findIndex((item) => item.id == record_id);
+        if (index >= 0) state.records.splice(index, 1);
+      });
     },
 
     // 数组头部压入对话记录
     SET_DIALOGUE(state, records) {
-      state.records = records
+      state.records = records;
     },
   },
-}
+};

@@ -1,52 +1,52 @@
 export default {
-  path: '/settings',
-  name: 'settings',
+  path: "/settings",
+  name: "settings",
   meta: {
-    title: '个人设置',
+    title: "个人设置",
     needLogin: true,
   },
-  redirect: '/settings/detail',
-  component: () => import('@/views/settings/layout'),
+  redirect: "/settings/detail",
+  component: () => import("@/views/settings/layout"),
   children: [
     {
-      path: '/settings/detail',
+      path: "/settings/detail",
       meta: {
-        title: '个人信息',
+        title: "个人信息",
         needLogin: true,
       },
-      component: () => import('@/views/settings/detail'),
+      component: () => import("@/views/settings/detail"),
     },
     {
-      path: '/settings/security',
+      path: "/settings/security",
       meta: {
-        title: '安全设置',
+        title: "安全设置",
         needLogin: true,
       },
-      component: () => import('@/views/settings/security'),
+      component: () => import("@/views/settings/security"),
     },
     {
-      path: '/settings/binding',
+      path: "/settings/binding",
       meta: {
-        title: '账户绑定',
+        title: "账户绑定",
         needLogin: true,
       },
-      component: () => import('@/views/settings/binding'),
+      component: () => import("@/views/settings/binding"),
     },
     {
-      path: '/settings/personalize',
+      path: "/settings/personalize",
       meta: {
-        title: '个性化设置',
+        title: "个性化设置",
         needLogin: true,
       },
-      component: () => import('@/views/settings/personalize'),
+      component: () => import("@/views/settings/personalize"),
     },
     {
-      path: '/settings/notification',
+      path: "/settings/notification",
       meta: {
-        title: '消息设置',
+        title: "消息设置",
         needLogin: true,
       },
-      component: () => import('@/views/settings/notification'),
+      component: () => import("@/views/settings/notification"),
     },
   ],
-}
+};

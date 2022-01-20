@@ -8,7 +8,7 @@
               <img :src="face" :onerror="defaultAvatar" />
             </div>
             <p class="user-status">
-              <span v-if="name">{{name}}</span>
+              <span v-if="name">{{ name }}</span>
               <span v-else>用户名称</span>
             </p>
             <p class="user-status">
@@ -29,9 +29,6 @@
                 </div>
               </router-link>
             </el-tooltip>
-
-
-
           </el-main>
           <el-footer height="60px" class="fixed-sidebar">
             <div class="menu-items" @click="logout">
@@ -46,22 +43,18 @@
       </el-main>
     </el-container>
 
-
-
     <!-- 语音消息提示 -->
     <audio id="audio" preload="auto">
       <source src="~@/assets/image/1701.mp3" type="audio/mp3" />
     </audio>
-
-
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
-import { ServeFindFriendApplyNum } from '@/api/contacts'
+import { mapState } from "vuex";
+import { ServeFindFriendApplyNum } from "@/api/contacts";
 
 export default {
-  name: 'MainLayout',
+  name: "MainLayout",
   props: {
     idx: {
       type: Number,
@@ -69,53 +62,53 @@ export default {
     },
   },
   computed: {
-
     ...mapState({
-      face: state => state.user.face,
-      name: state => state.user.name,
-      defaultAvatar: state => state.defaultAvatar,
-      socketStatus: state => state.socketStatus,
-      unreadNum: state => state.notify.unreadNum,
-      applyNum: state => state.notify.applyNum,
-      notifyCueTone: state => state.settings.notifyCueTone,
-      themeMode: state => state.settings.themeMode,
-      themeBagImg: state => state.settings.themeBagImg,
+      face: (state) => state.user.face,
+      name: (state) => state.user.name,
+      defaultAvatar: (state) => state.defaultAvatar,
+      socketStatus: (state) => state.socketStatus,
+      unreadNum: (state) => state.notify.unreadNum,
+      applyNum: (state) => state.notify.applyNum,
+      notifyCueTone: (state) => state.settings.notifyCueTone,
+      themeMode: (state) => state.settings.themeMode,
+      themeBagImg: (state) => state.settings.themeBagImg,
     }),
   },
   watch: {
     unreadNum(n, o) {
       if (n > 0 && n > o && this.notifyCueTone) {
-        this.play()
+        this.play();
       }
     },
   },
   created() {
-    this.setApplyNum()
+    this.setApplyNum();
   },
   methods: {
     play() {
       document
-        .querySelector('#audio')
+        .querySelector("#audio")
         .play()
         .catch(() => {
-          console.error('消息提示音播放异常')
-        })
+          console.error("消息提示音播放异常");
+        });
     },
     logout() {
-      this.$store.dispatch('ACT_USER_LOGOUT')
+      this.$store.dispatch("ACT_USER_LOGOUT");
     },
     setApplyNum() {
-      ServeFindFriendApplyNum().then(res => {
+      // TODO 暂且return
+      return;
+      ServeFindFriendApplyNum().then((res) => {
         if (res.code == 200 && res.data.unread_num > 0) {
-          this.$store.commit('INCR_APPLY_NUM')
+          this.$store.commit("INCR_APPLY_NUM");
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 <style lang="less">
-
 .main-layout {
   position: fixed;
   width: 75%;
@@ -334,7 +327,6 @@ export default {
   }
 }
 
-
 @media screen and (max-width: 1000px) {
   .main-layout {
     width: 100%;
@@ -345,10 +337,8 @@ export default {
 
 // iphone
 @media screen and (max-width: 767px) {
-  .side-edge{
-     display: none !important;
+  .side-edge {
+    display: none !important;
   }
 }
-
-
 </style>

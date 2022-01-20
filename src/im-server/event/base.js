@@ -1,30 +1,31 @@
-import store from '@/store'
-import router from '@/router'
-import { Notification } from 'element-ui'
+import store from "@/store";
+import router from "@/router";
+import { Notification } from "element-ui";
 
 class Base {
   /**
    * 初始化
    */
   constructor() {
-    this.$notify = Notification
+    this.$notify = Notification;
   }
 
   getStoreInstance() {
-    return store
+    return store;
   }
 
   /**
    * 获取当前登录用户的ID
    */
   getAccountId() {
-    return store.state.user.uid
+    console.log("store.state", store.state.user);
+    return store.state.user.id;
   }
 
   getTalkParams() {
-    let { talk_type, receiver_id, index_name } = store.state.dialogue
+    let { talk_type, receiver_id, index_name } = store.state.dialogue;
 
-    return { talk_type, receiver_id, index_name }
+    return { talk_type, receiver_id, index_name };
   }
 
   /**
@@ -35,27 +36,27 @@ class Base {
    * @param {Number} receiver_id 接收者ID
    */
   isTalk(talk_type, sender_id, receiver_id) {
-    let params = this.getTalkParams()
+    let params = this.getTalkParams();
 
     if (talk_type != params.talk_type) {
-      return false
+      return false;
     } else if (
       params.receiver_id == receiver_id ||
       params.receiver_id == sender_id
     ) {
-      return true
+      return true;
     }
 
-    return false
+    return false;
   }
 
   /**
    * 判断用户是否打开对话页
    */
   isTalkPage() {
-    let path = router.currentRoute.path
-    return !(path != '/message' && path != '/')
+    let path = router.currentRoute.path;
+    return !(path != "/message" && path != "/");
   }
 }
 
-export default Base
+export default Base;

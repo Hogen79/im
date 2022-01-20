@@ -4,7 +4,7 @@
       <el-header height="60px" class="header">
         <p>消息管理器</p>
         <p class="title">
-          <span>{{ query.talk_type == 1 ? '好友' : '群' }}【{{ title }}】</span>
+          <span>{{ query.talk_type == 1 ? "好友" : "群" }}【{{ title }}】</span>
         </p>
         <p class="tools">
           <i
@@ -212,12 +212,12 @@
   </div>
 </template>
 <script>
-import { ServeGetContacts } from '@/api/contacts'
-import { ServeFindTalkRecords } from '@/api/chat'
-import { formatSize as renderSize, download, imgZoom } from '@/utils/functions'
+import { ServeGetContacts } from "@/api/contacts";
+import { ServeFindTalkRecords } from "@/api/chat";
+import { formatSize as renderSize, download, imgZoom } from "@/utils/functions";
 
 export default {
-  name: 'TalkSearchRecord',
+  name: "TalkSearchRecord",
   props: {
     params: {
       type: Object,
@@ -225,8 +225,8 @@ export default {
         return {
           talk_type: 0,
           receiver_id: 0,
-          title: '',
-        }
+          title: "",
+        };
       },
     },
   },
@@ -234,13 +234,13 @@ export default {
     return {
       fullscreen: false,
 
-      user_id: this.$store.state.user.uid,
-      title: '',
+      user_id: this.$store.state.user.id,
+      title: "",
 
       // 侧边栏相关信息
       broadside: false,
       contacts: {
-        show: 'friends',
+        show: "friends",
         friends: [],
         groups: [],
       },
@@ -262,35 +262,35 @@ export default {
       showBox: 0,
 
       tabType: [
-        { name: '全部', type: 0 },
-        { name: '文件', type: 2 },
-        { name: '会话记录', type: 3 },
-        { name: '代码块', type: 4 },
-        { name: '群投票', type: 5 },
+        { name: "全部", type: 0 },
+        { name: "文件", type: 2 },
+        { name: "会话记录", type: 3 },
+        { name: "代码块", type: 4 },
+        { name: "群投票", type: 5 },
       ],
 
       search: {
-        keyword: '', // 关键字查询
-        date: '', // 时间查询
+        keyword: "", // 关键字查询
+        date: "", // 时间查询
         page: 1, // 当前分页
         totalPage: 50, // 总分页
         items: [], // 数据列表
         isShowDate: false,
       },
-    }
+    };
   },
   mounted() {
-    this.title = this.params.title
+    this.title = this.params.title;
     this.query = {
       talk_type: this.params.talk_type,
       receiver_id: this.params.receiver_id,
       msg_type: 0,
-    }
+    };
 
-    this.loadChatRecord(0)
+    this.loadChatRecord(0);
   },
   created() {
-    this.loadFriends()
+    this.loadFriends();
   },
   methods: {
     download,
@@ -298,39 +298,39 @@ export default {
 
     // 获取图片信息
     getImgStyle(url) {
-      return imgZoom(url, 200)
+      return imgZoom(url, 200);
     },
 
     // 获取会话记录消息名称
     getForwardTitle(item) {
-      let arr = [...new Set(item.map(v => v.nickname))]
-      return arr.join('、') + '的会话记录'
+      let arr = [...new Set(item.map((v) => v.nickname))];
+      return arr.join("、") + "的会话记录";
     },
 
     // 获取好友列表
     loadFriends() {
       ServeGetContacts().then(({ code, data }) => {
         if (code == 200) {
-          this.contacts.friends = data.map(item => {
+          this.contacts.friends = data.map((item) => {
             return {
               id: item.id,
               type: 1,
               avatar: item.avatar,
               name: item.friend_remark ? item.friend_remark : item.nickname,
-            }
-          })
+            };
+          });
         }
-      })
+      });
     },
 
     // 左侧联系人菜单点击事件
     triggerMenuItem(item) {
-      this.title = item.name
-      this.query.talk_type = item.type
-      this.query.receiver_id = item.id
-      this.showBox = 0
+      this.title = item.name;
+      this.query.talk_type = item.type;
+      this.query.receiver_id = item.id;
+      this.showBox = 0;
 
-      this.triggerLoadType(0)
+      this.triggerLoadType(0);
     },
 
     // 加载历史记录
@@ -340,62 +340,61 @@ export default {
         receiver_id: this.query.receiver_id,
         record_id: this.records.record_id,
         msg_type: this.query.msg_type,
-      }
+      };
 
-      if (this.records.loadStatus == 1) return
+      if (this.records.loadStatus == 1) return;
 
-      this.records.loadStatus = 1
+      this.records.loadStatus = 1;
       ServeFindTalkRecords(data)
-        .then(res => {
-          if (res.code != 200) return
+        .then((res) => {
+          if (res.code != 200) return;
 
-          let records = data.record_id == 0 ? [] : this.records.items
+          let records = data.record_id == 0 ? [] : this.records.items;
 
-          records.push(...res.data.rows)
+          records.push(...res.data.rows);
 
-          this.records.items = records
+          this.records.items = records;
           this.records.loadStatus =
-            res.data.rows.length < res.data.limit ? 2 : 0
+            res.data.rows.length < res.data.limit ? 2 : 0;
 
           if (this.records.items.length == 0) {
-            this.records.isEmpty = true
+            this.records.isEmpty = true;
           } else {
-            this.records.record_id = this.records.items[
-              this.records.items.length - 1
-            ].id
+            this.records.record_id =
+              this.records.items[this.records.items.length - 1].id;
           }
         })
         .catch(() => {
-          this.records.loadStatus = 0
-        })
+          this.records.loadStatus = 0;
+        });
     },
 
     triggerLoadType(type) {
-      this.records.record_id = 0
-      this.query.msg_type = type
-      this.records.isEmpty = false
-      this.records.items = []
+      this.records.record_id = 0;
+      this.query.msg_type = type;
+      this.records.isEmpty = false;
+      this.records.items = [];
 
-      this.loadChatRecord()
+      this.loadChatRecord();
     },
 
     searchText() {
-      if (this.search.keyword == '') {
-        this.showBox = 0
-        return false
+      if (this.search.keyword == "") {
+        this.showBox = 0;
+        return false;
       }
 
       this.$notify.info({
-        title: '消息',
-        message: '查询功能正在开发中...',
-      })
+        title: "消息",
+        message: "查询功能正在开发中...",
+      });
     },
 
     triggerBroadside() {
-      this.broadside = !this.broadside
+      this.broadside = !this.broadside;
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 /deep/.el-scrollbar__wrap {
@@ -599,5 +598,5 @@ export default {
   }
 }
 
-@import '~@/assets/css/talk/talk-records.less';
+@import "~@/assets/css/talk/talk-records.less";
 </style>

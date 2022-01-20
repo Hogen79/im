@@ -4,7 +4,7 @@
       <div class="vote-from">
         <div class="vheader">
           <p>
-            {{ answer_mode == 1 ? '[多选投票]' : '[单选投票]' }}
+            {{ answer_mode == 1 ? "[多选投票]" : "[单选投票]" }}
             <i
               v-show="is_vote"
               class="pointer"
@@ -46,14 +46,14 @@
                 v-model="option.is_checked"
                 @change="toSelect2(option)"
               />
-              <span @click="toSelect(option, index)" style="margin-left: 10px;">
+              <span @click="toSelect(option, index)" style="margin-left: 10px">
                 {{ option.value }} 、{{ option.text }}
               </span>
             </p>
           </div>
           <div class="vfooter">
             <el-button plain round @click="toVote">
-              {{ isUserVote ? '立即投票' : '请选择进行投票' }}
+              {{ isUserVote ? "立即投票" : "请选择进行投票" }}
             </el-button>
           </div>
         </template>
@@ -63,10 +63,10 @@
 </template>
 
 <script>
-import { ServeConfirmVoteHandle } from '@/api/chat'
+import { ServeConfirmVoteHandle } from "@/api/chat";
 
 export default {
-  name: 'VoteMessage',
+  name: "VoteMessage",
   props: {
     vote: {
       type: Object,
@@ -80,109 +80,109 @@ export default {
   data() {
     return {
       answer_mode: 0,
-      title: '啊谁叫你打开你卡沙发那,那就是看、卡收纳是你',
-      radio_value: '',
+      title: "啊谁叫你打开你卡沙发那,那就是看、卡收纳是你",
+      radio_value: "",
       options: [],
       is_vote: false,
       answer_num: 0,
       answered_num: 0,
       refresh: false,
-    }
+    };
   },
   computed: {
     isUserVote() {
-      return this.options.some(iten => {
-        return iten.is_checked
-      })
+      return this.options.some((iten) => {
+        return iten.is_checked;
+      });
     },
   },
   created() {
-    let user_id = this.$store.state.user.uid
-    let { detail, statistics, vote_users } = this.vote
+    let user_id = this.$store.state.user.id;
+    let { detail, statistics, vote_users } = this.vote;
 
-    this.answer_mode = detail.answer_mode
-    this.answer_num = detail.answer_num
-    this.answered_num = detail.answered_num
+    this.answer_mode = detail.answer_mode;
+    this.answer_num = detail.answer_num;
+    this.answered_num = detail.answered_num;
 
-    detail.answer_option.forEach(item => {
+    detail.answer_option.forEach((item) => {
       this.options.push({
         value: item.key,
         text: item.value,
         is_checked: false,
         num: 0,
-        progress: '00.0',
-      })
-    })
+        progress: "00.0",
+      });
+    });
 
-    this.is_vote = vote_users.some(value => {
-      return value == user_id
-    })
+    this.is_vote = vote_users.some((value) => {
+      return value == user_id;
+    });
 
-    this.updateStatistics(statistics)
+    this.updateStatistics(statistics);
   },
   methods: {
     loadRefresh() {
-      this.refresh = true
+      this.refresh = true;
 
       setTimeout(() => {
-        this.refresh = false
-      }, 500)
+        this.refresh = false;
+      }, 500);
     },
     updateStatistics(data) {
-      let count = data.count
-      this.options.forEach(option => {
-        option.num = data.options[option.value]
+      let count = data.count;
+      this.options.forEach((option) => {
+        option.num = data.options[option.value];
 
         if (count > 0) {
-          option.progress = (data.options[option.value] / count) * 100
+          option.progress = (data.options[option.value] / count) * 100;
         }
-      })
+      });
     },
 
     toSelect(option, index) {
       if (this.answer_mode == 0) {
-        this.options.forEach(option => {
-          option.is_checked = false
-        })
+        this.options.forEach((option) => {
+          option.is_checked = false;
+        });
       }
 
-      this.options[index].is_checked = !option.is_checked
+      this.options[index].is_checked = !option.is_checked;
     },
     toSelect2(option) {
       if (this.answer_mode == 0) {
-        this.options.forEach(item => {
+        this.options.forEach((item) => {
           if (option.value == item.value) {
-            item.is_checked = option.is_checked
+            item.is_checked = option.is_checked;
           } else {
-            item.is_checked = false
+            item.is_checked = false;
           }
-        })
+        });
       }
     },
     toVote() {
       if (this.isUserVote == false) {
-        return false
+        return false;
       }
 
-      let items = []
-      this.options.forEach(item => {
+      let items = [];
+      this.options.forEach((item) => {
         if (item.is_checked) {
-          items.push(item.value)
+          items.push(item.value);
         }
-      })
+      });
 
       ServeConfirmVoteHandle({
         record_id: this.record_id,
-        options: items.join(','),
-      }).then(res => {
+        options: items.join(","),
+      }).then((res) => {
         if (res.code == 200) {
-          this.is_vote = true
-          this.updateStatistics(res.data)
+          this.is_vote = true;
+          this.updateStatistics(res.data);
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .vote-message {
@@ -215,7 +215,7 @@ export default {
       }
 
       &::before {
-        content: '投票';
+        content: "投票";
         position: absolute;
         font-size: 60px;
         color: white;

@@ -14,7 +14,7 @@
           </div>
           <div class="nickname">
             <i class="iconfont icon-qianming" />
-            <span>{{ detail.nickname || '未设置昵称' }}</span>
+            <span>{{ detail.nickname || "未设置昵称" }}</span>
             <div class="share no-select">
               <i class="iconfont icon-fenxiang3" /> <span>分享</span>
             </div>
@@ -35,7 +35,7 @@
           </div>
           <div class="card-row">
             <label>昵称</label>
-            <span>{{ detail.nickname || '未设置昵称' }}</span>
+            <span>{{ detail.nickname || "未设置昵称" }}</span>
           </div>
           <div class="card-row">
             <label>性别</label>
@@ -44,7 +44,7 @@
           <div v-show="detail.friend_status == 2" class="card-row">
             <label>备注</label>
             <span v-if="editRemark.isShow == false">{{
-              detail.nickname_remark ? detail.nickname_remark : '暂无备注'
+              detail.nickname_remark ? detail.nickname_remark : "暂无备注"
             }}</span>
             <span v-else>
               <input
@@ -122,12 +122,12 @@
   </div>
 </template>
 <script>
-import { ServeSearchUser } from '@/api/user'
-import { ServeCreateContact, ServeEditContactRemark } from '@/api/contacts'
-import { toTalk } from '@/utils/talk'
+import { ServeSearchUser } from "@/api/user";
+import { ServeCreateContact, ServeEditContactRemark } from "@/api/contacts";
+import { toTalk } from "@/utils/talk";
 
 export default {
-  name: 'UserCardDetail',
+  name: "UserCardDetail",
   props: {
     user_id: {
       type: Number,
@@ -136,89 +136,88 @@ export default {
   },
   filters: {
     gender(value) {
-      let arr = ['未知', '男', '女']
-      return arr[value] || '未知'
+      let arr = ["未知", "男", "女"];
+      return arr[value] || "未知";
     },
     // 手机号格式化
     mobile(value) {
       return (
-        value.substr(0, 3) + ' ' + value.substr(3, 4) + ' ' + value.substr(7, 4)
-      )
+        value.substr(0, 3) + " " + value.substr(3, 4) + " " + value.substr(7, 4)
+      );
     },
   },
   data() {
     return {
       detail: {
-        mobile: '',
-        nickname: '',
-        avatar: '',
-        motto: '',
+        mobile: "",
+        nickname: "",
+        avatar: "",
+        motto: "",
         friend_status: 0,
         friend_apply: 0,
-        nickname_remark: '',
-        bag: require('@/assets/image/default-user-banner.png'),
+        nickname_remark: "",
+        bag: require("@/assets/image/default-user-banner.png"),
         gender: 0,
       },
 
       // 好友备注表单
       editRemark: {
         isShow: false,
-        text: '',
+        text: "",
       },
 
       // 好友申请表单
       apply: {
         isShow: false,
-        text: '',
+        text: "",
       },
 
       contacts: false,
-    }
+    };
   },
   created() {
-    this.loadUserDetail()
+    this.loadUserDetail();
   },
   methods: {
     close() {
-      if (this.contacts) return false
+      if (this.contacts) return false;
 
-      this.$emit('close')
+      this.$emit("close");
     },
 
     // 点击编辑备注信息
     clickEditRemark() {
-      this.editRemark.isShow = true
-      this.editRemark.text = this.detail.nickname_remark
+      this.editRemark.isShow = true;
+      this.editRemark.text = this.detail.nickname_remark;
     },
 
     // 获取用户信息
     loadUserDetail() {
       ServeSearchUser({
         user_id: this.user_id,
-      }).then(res => {
+      }).then((res) => {
         if (res.code == 200) {
-          this.detail.user_id = res.data.id
-          Object.assign(this.detail, res.data)
+          this.detail.user_id = res.data.id;
+          Object.assign(this.detail, res.data);
         }
-      })
+      });
     },
 
     // 发送添加好友申请
     sendApply() {
-      if (this.apply.text == '') return
+      if (this.apply.text == "") return;
       ServeCreateContact({
         friend_id: this.detail.user_id,
         remark: this.apply.text,
-      }).then(res => {
+      }).then((res) => {
         if (res.code == 200) {
-          this.apply.isShow = false
-          this.apply.text = ''
-          this.detail.friend_apply = 1
+          this.apply.isShow = false;
+          this.apply.text = "";
+          this.detail.friend_apply = 1;
         } else {
-
-          this.$message.error('发送好友申请失败,请稍后再试...')
+          this.$message.error("发送好友申请失败,请稍后再试...");
         }
-      })
+      });
     },
 
     // 编辑好友备注信息
@@ -226,34 +225,34 @@ export default {
       let data = {
         friend_id: this.detail.user_id,
         remarks: this.editRemark.text,
-      }
+      };
 
       if (data.remarks == this.detail.nickname_remark) {
-        this.editRemark.isShow = false
-        return
+        this.editRemark.isShow = false;
+        return;
       }
 
-      ServeEditContactRemark(data).then(res => {
+      ServeEditContactRemark(data).then((res) => {
         if (res.code == 200) {
-          this.editRemark.isShow = false
-          this.detail.nickname_remark = data.remarks
-          this.$emit('changeRemark', data)
+          this.editRemark.isShow = false;
+          this.detail.nickname_remark = data.remarks;
+          this.$emit("changeRemark", data);
         }
-      })
+      });
     },
 
     // 隐藏申请表单
     closeApply() {
-      this.apply.isShow = false
+      this.apply.isShow = false;
     },
 
     // 发送好友消息
     sendMessage() {
-      this.close()
-      toTalk(1, this.user_id)
+      this.close();
+      toTalk(1, this.user_id);
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .container {
