@@ -67,7 +67,7 @@
                 <el-avatar
                   class="pointer"
                   :size="30"
-                  :src="item.avatar"
+                  :src="item.face"
                   @click.native="catFriendDetail(item.user_id)"
                 />
               </aside>
@@ -81,7 +81,7 @@
                     class="time"
                   >
                     <i class="el-icon-time" />
-                    {{ parseTime(item.createTime, "{m}月{d}日 {h}:{i}") }}
+                    <!-- {{ parseTime(item.createTime, "{m}月{d}日 {h}:{i}") }} -->
                   </span>
                 </div>
 
@@ -93,7 +93,7 @@
                     class="nickname"
                   >
                     {{ item.name || item.friend_remarks }} |
-                    {{ parseTime(item.createTime, "{m}月{d}日 {h}:{i}") }}
+                    <!-- {{ parseTime(item.createTime, "{m}月{d}日 {h}:{i}") }} -->
                   </span>
 
                   <!-- 文本消息 -->
@@ -177,11 +177,11 @@
             </div>
 
             <!-- 消息时间 -->
-            <div
+            <!-- <div
               v-show="compareTime(idx, item.createTime)"
               class="datetime no-select"
               v-text="sendTime(item.createTime)"
-            />
+            /> -->
           </div>
         </div>
 
@@ -395,21 +395,82 @@ export default {
       }
     },
 
+    // #TODO 冗余代码
+
+    formatDateToString(date) {
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      if (month < 10) month = "0" + month;
+      if (day < 10) day = "0" + day;
+      return year + "-" + month + "-" + day;
+    },
+
+    formateDateAndTimeToString(date) {
+      var hours = date.getHours();
+      var mins = date.getMinutes();
+      var secs = date.getSeconds();
+      var msecs = date.getMilliseconds();
+      if (hours < 10) hours = "0" + hours;
+      if (mins < 10) mins = "0" + mins;
+      if (secs < 10) secs = "0" + secs;
+      if (msecs < 10) secs = "0" + msecs;
+      return (
+        this.formatDateToString(date) + " " + hours + ":" + mins + ":" + secs
+      );
+    },
+    // #冗余代码结束
+
     // 回车键发送消息回调事件
     submitSendMessage(content) {
       console.log("发送", content);
-      SocketInstance.emit("event_talk", {
+      const record = {
         operation_type: "MESSAGE",
         to: this.params.receiver_id,
         message_type: "MESSAGE",
         context: content,
         talk_id: this.params.talkId,
-      });
+      };
+      SocketInstance.emit("event_talk", record);
 
       this.$store.commit("UPDATE_TALK_ITEM", {
         index_name: this.index_name,
         draft_text: "",
       });
+
+      /**
+       * 插入数据
+       */
+      const insterChat = {
+        createTime: this.formateDateAndTimeToString(new Date()),
+        fromUser: this.id,
+        toUser: record.to,
+        isRead: false,
+        messageType: "MESSAGE",
+        text: content,
+        float: "right",
+      };
+
+      console.log(insterChat);
+      // 插入对话记录
+      this.$store.commit("PUSH_DIALOGUE", insterChat);
+      // 获取聊天面板元素节点
+      let el = document.getElementById("lumenChatPanel");
+
+      // 判断的滚动条是否在底部
+      let isBottom =
+        Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight;
+
+      if (isBottom || record.to == this.id) {
+        this.$nextTick(() => {
+          el.scrollTop = el.scrollHeight;
+        });
+      } else {
+        this.$store.commit("SET_TLAK_UNREAD_MESSAGE", {
+          content: content,
+          nickname: record.name,
+        });
+      }
     },
 
     // 推送编辑事件消息
@@ -444,32 +505,25 @@ export default {
     // 加载用户聊天详情信息
     loadChatRecords() {
       const user_id = this.id;
-
       const data = {
         num: 10,
         lastMessageId: "",
         talkId: this.params.talkId,
       };
-
       // this.loadRecord.status = 0
-
       let el = document.getElementById("lumenChatPanel");
       let scrollHeight = el.scrollHeight;
-
       ServeTalkRecords(data)
         .then((res) => {
           // 防止点击切换过快消息返回延迟，导致信息错误
           console.log("读取历史数据", res);
-
           const records = res.result.map((item) => {
             item.float = "center";
             if (item.toUser > 0) {
               item.float = item.fromUser == user_id ? "right" : "left";
             }
-
             return item;
           });
-
           // 判断是否是初次加载
           if (data.record_id == 0) {
             this.$store.commit("SET_DIALOGUE", []);
@@ -630,14 +684,6 @@ export default {
       });
     },
 
-    // 转发消息
-    forwardRecords(idx, item) {
-      this.$notify({
-        title: "温馨提示",
-        message: "单条记录转发开发中...",
-      });
-    },
-
     // 从列表中删除记录
     delRecords(arr) {
       this.$store.commit("BATCH_DELETE_DIALOGUE", arr);
@@ -724,15 +770,6 @@ export default {
         customClass: "cus-contextmenu-item",
         onClick: () => {
           this.removeRecords(idx, item);
-        },
-      });
-
-      menus.push({
-        label: "转发",
-        icon: "el-icon-s-promotion",
-        customClass: "cus-contextmenu-item",
-        onClick: () => {
-          this.forwardRecords(idx, item);
         },
       });
 

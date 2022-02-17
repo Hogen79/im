@@ -109,7 +109,7 @@
                     @contextmenu.prevent="talkItemsMenu(item, $event)"
                   >
                     <div class="avatar-box">
-                      <span v-show="!item.avatar">
+                      <span v-show="!item.face">
                         {{
                           (item.remark_name
                             ? item.remark_name

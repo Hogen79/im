@@ -38,12 +38,13 @@ class Talk extends Base {
    */
   constructor(resource) {
     super();
+    console.log("接口构造 resource", resource);
 
-    this.sender_id = resource.sender_id;
-    this.receiver_id = resource.receiver_id;
-    this.talk_type = resource.talk_type;
+    this.sender_id = resource.fromUser; //发送
+    this.receiver_id = resource.toUser; //接收
+    this.talk_type = resource.messageType; //类型
 
-    this.resource = resource.data;
+    this.resource = resource;
   }
 
   /**
@@ -75,11 +76,11 @@ class Talk extends Base {
    * @returns
    */
   getFloatType() {
-    let user_id = this.resource.user_id;
+    let userId = this.resource.userId;
 
-    if (user_id == 0) return "center";
+    if (userId == 0) return "center";
 
-    return user_id == this.getAccountId() ? "right" : "left";
+    return userId == this.getAccountId() ? "right" : "left";
   }
 
   /**
@@ -117,12 +118,13 @@ class Talk extends Base {
     }
 
     // 判断会话列表是否存在，不存在则创建
-    if (findTalkIndex(this.getIndexName()) == -1) {
-      return this.addTalkItem();
-    }
+    // if (findTalkIndex(this.getIndexName()) == -1) {
+    //   return this.addTalkItem();
+    // }
 
-    let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id);
-
+    // let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id);
+    this.insertTalkRecord();
+    return;
     // 判断当前是否正在和好友对话
     if (isTrue) {
       this.insertTalkRecord();
@@ -180,11 +182,9 @@ class Talk extends Base {
     } else if (talk_type == 2) {
       receiver_id = this.receiver_id;
     }
+    console.log("加载对接节点", this.resource);
 
-    ServeCreateTalkList({
-      talk_type,
-      receiver_id,
-    }).then(({ code, data }) => {
+    ServeCreateTalkList(receiver_id).then(({ code, data }) => {
       if (code == 200) {
         this.getStoreInstance().commit("PUSH_TALK_ITEM", formatTalkItem(data));
       }
@@ -197,27 +197,33 @@ class Talk extends Base {
   insertTalkRecord() {
     let store = this.getStoreInstance();
     let record = this.resource;
+    console.log("插入谈话记录", record);
 
     record.float = this.getFloatType();
 
     store.commit("PUSH_DIALOGUE", record);
-    console.log("插入谈话记录");
+
     // 获取聊天面板元素节点
     let el = document.getElementById("lumenChatPanel");
 
     // 判断的滚动条是否在底部
     let isBottom = Math.ceil(el.scrollTop) + el.clientHeight >= el.scrollHeight;
 
-    if (isBottom || record.user_id == this.getAccountId()) {
+    if (
+      isBottom ||
+      record.userId == this.getAccountId() ||
+      record.fromUser == this.getAccountId()
+    ) {
       Vue.nextTick(() => {
         el.scrollTop = el.scrollHeight;
       });
     } else {
       store.commit("SET_TLAK_UNREAD_MESSAGE", {
         content: this.getTalkText(),
-        nickname: record.nickname,
+        nickname: record.name,
       });
     }
+    console.log("%准备更新...UPDATE_TALK_ITEM%", "color:red");
 
     store.commit("UPDATE_TALK_ITEM", {
       index_name: this.getIndexName(),

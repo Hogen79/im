@@ -1,6 +1,6 @@
 /** 公共方法类 */
-import { getToken } from '@/utils/auth'
-import config from '@/config/config'
+import { getToken } from "@/utils/auth";
+import config from "@/config/config";
 
 /**
  * 人性化时间显示
@@ -8,51 +8,51 @@ import config from '@/config/config'
  * @param {Object} datetime
  */
 export function formatTime(datetime) {
-  if (datetime == null) return ''
+  if (datetime == null) return "";
 
-  datetime = datetime.replace(/-/g, '/')
+  datetime = datetime.replace(/-/g, "/");
 
-  let time = new Date()
-  let outTime = new Date(datetime)
+  let time = new Date();
+  let outTime = new Date(datetime);
   if (/^[1-9]\d*$/.test(datetime)) {
-    outTime = new Date(parseInt(datetime) * 1000)
+    outTime = new Date(parseInt(datetime) * 1000);
   }
 
   if (
     time.getTime() < outTime.getTime() ||
     time.getFullYear() != outTime.getFullYear()
   ) {
-    return parseTime(outTime, '{y}-{m}-{d} {h}:{i}')
+    return parseTime(outTime, "{y}-{m}-{d} {h}:{i}");
   }
 
   if (time.getMonth() != outTime.getMonth()) {
-    return parseTime(outTime, '{m}-{d} {h}:{i}')
+    return parseTime(outTime, "{m}-{d} {h}:{i}");
   }
 
   if (time.getDate() != outTime.getDate()) {
-    let day = outTime.getDate() - time.getDate()
+    let day = outTime.getDate() - time.getDate();
     if (day == -1) {
-      return parseTime(outTime, '昨天 {h}:{i}')
+      return parseTime(outTime, "昨天 {h}:{i}");
     }
 
     if (day == -2) {
-      return parseTime(outTime, '前天 {h}:{i}')
+      return parseTime(outTime, "前天 {h}:{i}");
     }
 
-    return parseTime(outTime, '{m}-{d} {h}:{i}')
+    return parseTime(outTime, "{m}-{d} {h}:{i}");
   }
 
   if (time.getHours() != outTime.getHours()) {
-    return parseTime(outTime, '{h}:{i}')
+    return parseTime(outTime, "{h}:{i}");
   }
 
-  let minutes = outTime.getMinutes() - time.getMinutes()
+  let minutes = outTime.getMinutes() - time.getMinutes();
   if (minutes == 0) {
-    return '刚刚'
+    return "刚刚";
   }
 
-  minutes = Math.abs(minutes)
-  return `${minutes}分钟前`
+  minutes = Math.abs(minutes);
+  return `${minutes}分钟前`;
 }
 
 /**
@@ -61,16 +61,16 @@ export function formatTime(datetime) {
  * @param {String} value 文件大小(字节)
  */
 export function formatSize(value) {
-  if (null == value || value == '') {
-    return '0'
+  if (null == value || value == "") {
+    return "0";
   }
-  let unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-  let index = 0
-  let srcsize = parseFloat(value)
-  index = Math.floor(Math.log(srcsize) / Math.log(1024))
-  let size = srcsize / Math.pow(1024, index)
-  size = size.toFixed(2) //保留的小数位数
-  return size + unitArr[index]
+  let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let index = 0;
+  let srcsize = parseFloat(value);
+  index = Math.floor(Math.log(srcsize) / Math.log(1024));
+  let size = srcsize / Math.pow(1024, index);
+  size = size.toFixed(2); //保留的小数位数
+  return size + unitArr[index];
 }
 /**
  * 获取文件后缀名
@@ -78,9 +78,9 @@ export function formatSize(value) {
  * @param {String} fileName
  */
 export function getFileExt(fileName) {
-  let ext = fileName.split('.')
-  ext = ext[ext.length - 1] // 获取文件后缀名
-  return ext
+  let ext = fileName.split(".");
+  ext = ext[ext.length - 1]; // 获取文件后缀名
+  return ext;
 }
 
 /**
@@ -90,23 +90,23 @@ export function getFileExt(fileName) {
  */
 export function downloadIamge(imgsrc, name) {
   //下载图片地址和图片名
-  let image = new Image()
+  let image = new Image();
   // 解决跨域 Canvas 污染问题
-  image.setAttribute('crossOrigin', 'anonymous')
-  image.onload = function() {
-    let canvas = document.createElement('canvas')
-    canvas.width = image.width
-    canvas.height = image.height
-    let context = canvas.getContext('2d')
-    context.drawImage(image, 0, 0, image.width, image.height)
-    let url = canvas.toDataURL('image/png') //得到图片的base64编码数据
-    let a = document.createElement('a') // 生成一个a元素
-    let event = new MouseEvent('click') // 创建一个单击事件
-    a.download = name || 'photo' // 设置图片名称
-    a.href = url // 将生成的URL设置为a.href属性
-    a.dispatchEvent(event) // 触发a的单击事件
-  }
-  image.src = imgsrc
+  image.setAttribute("crossOrigin", "anonymous");
+  image.onload = function () {
+    let canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    let context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, image.width, image.height);
+    let url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
+    let a = document.createElement("a"); // 生成一个a元素
+    let event = new MouseEvent("click"); // 创建一个单击事件
+    a.download = name || "photo"; // 设置图片名称
+    a.href = url; // 将生成的URL设置为a.href属性
+    a.dispatchEvent(event); // 触发a的单击事件
+  };
+  image.src = imgsrc;
 }
 
 /**
@@ -118,19 +118,19 @@ export function getImageInfo(imgsrc) {
   let data = {
     width: 0,
     height: 0,
-  }
+  };
 
-  let arr = imgsrc.split('_')
-  if (arr.length == 1) return data
+  let arr = imgsrc.split("_");
+  if (arr.length == 1) return data;
 
-  let info = arr[arr.length - 1].match(/\d+x\d+/g)
-  if (info == null) return data
+  let info = arr[arr.length - 1].match(/\d+x\d+/g);
+  if (info == null) return data;
 
-  info = info[0].split('x')
+  info = info[0].split("x");
   return {
     width: parseInt(info[0]),
     height: parseInt(info[1]),
-  }
+  };
 }
 
 /**
@@ -139,12 +139,12 @@ export function getImageInfo(imgsrc) {
  * @param {Number} cr_id
  */
 export function download(cr_id) {
-  let api = config.BASE_API_URL
-  let token = getToken()
+  let api = config.BASE_API_URL;
+  let token = getToken();
   try {
-    let link = document.createElement('a')
-    link.href = `${api}/download/user-chat-file?cr_id=${cr_id}&token=${token}`
-    link.click()
+    let link = document.createElement("a");
+    link.href = `${api}/download/user-chat-file?cr_id=${cr_id}&token=${token}`;
+    link.click();
   } catch (e) {}
 }
 
@@ -157,23 +157,24 @@ export function download(cr_id) {
  */
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
-    return null
+    return null;
   }
 
-  let date
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  let date;
+  const format = cFormat || "{y}-{m}-{d} {h}:{i}:{s}";
 
-  if (typeof time === 'object') {
-    date = time
+  if (typeof time === "object") {
+    date = time;
   } else {
-    if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
-      time = parseInt(time)
+    if (typeof time === "string" && /^[0-9]+$/.test(time)) {
+      time = parseInt(time);
     }
-    if (typeof time === 'number' && time.toString().length === 10) {
-      time = time * 1000
+    if (typeof time === "number" && time.toString().length === 10) {
+      time = time * 1000;
+      console.log("时间判断为number");
     }
 
-    date = new Date(time.replace(/-/g, '/'))
+    date = new Date(time.replace(/-/g, "/"));
   }
 
   const formatObj = {
@@ -184,19 +185,19 @@ export function parseTime(time, cFormat) {
     i: date.getMinutes(),
     s: date.getSeconds(),
     a: date.getDay(),
-  }
+  };
 
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
-    const value = formatObj[key]
+    const value = formatObj[key];
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') {
-      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    if (key === "a") {
+      return ["日", "一", "二", "三", "四", "五", "六"][value];
     }
 
-    return value.toString().padStart(2, '0')
-  })
+    return value.toString().padStart(2, "0");
+  });
 
-  return time_str
+  return time_str;
 }
 
 /**
@@ -206,11 +207,11 @@ export function parseTime(time, cFormat) {
  */
 export function trim(str, type = null) {
   if (type) {
-    return str.replace(/(^\s*)|(\s*$)/g, '')
-  } else if (type == 'l') {
-    return str.replace(/(^\s*)/g, '')
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+  } else if (type == "l") {
+    return str.replace(/(^\s*)/g, "");
   } else {
-    return str.replace(/(\s*$)/g, '')
+    return str.replace(/(\s*$)/g, "");
   }
 }
 
@@ -221,9 +222,9 @@ export function trim(str, type = null) {
  * @returns {Object}
  */
 export function param2Obj(url) {
-  const search = url.split('?')[1]
+  const search = url.split("?")[1];
 
-  if (!search) return {}
+  if (!search) return {};
 
   return JSON.parse(
     '{"' +
@@ -231,9 +232,9 @@ export function param2Obj(url) {
         .replace(/"/g, '\\"')
         .replace(/&/g, '","')
         .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
+        .replace(/\+/g, " ") +
       '"}'
-  )
+  );
 }
 
 /**
@@ -241,14 +242,14 @@ export function param2Obj(url) {
  * @returns {Array}
  */
 export function param(json) {
-  if (!json) return ''
+  if (!json) return "";
   return cleanArray(
-    Object.keys(json).map(key => {
-      if (json[key] === undefined) return ''
+    Object.keys(json).map((key) => {
+      if (json[key] === undefined) return "";
 
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key])
+      return encodeURIComponent(key) + "=" + encodeURIComponent(json[key]);
     })
-  ).join('&')
+  ).join("&");
 }
 
 /**
@@ -256,14 +257,14 @@ export function param(json) {
  * @returns {Array}
  */
 export function cleanArray(actual) {
-  const newArray = []
+  const newArray = [];
   for (let i = 0; i < actual.length; i++) {
     if (actual[i]) {
-      newArray.push(actual[i])
+      newArray.push(actual[i]);
     }
   }
 
-  return newArray
+  return newArray;
 }
 
 /**
@@ -272,19 +273,19 @@ export function cleanArray(actual) {
  */
 export function toggleClass(element, className) {
   if (!element || !className) {
-    return
+    return;
   }
 
-  let classString = element.className
-  let nameIndex = classString.indexOf(className)
+  let classString = element.className;
+  let nameIndex = classString.indexOf(className);
   if (nameIndex === -1) {
-    classString += '' + className
+    classString += "" + className;
   } else {
     classString =
       classString.substr(0, nameIndex) +
-      classString.substr(nameIndex + className.length)
+      classString.substr(nameIndex + className.length);
   }
-  element.className = classString
+  element.className = classString;
 }
 
 /**
@@ -295,7 +296,7 @@ export function toggleClass(element, className) {
  * @returns {Boolean}
  */
 export function hasClass(ele, cls) {
-  return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
+  return !!ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
 }
 
 /**
@@ -305,7 +306,7 @@ export function hasClass(ele, cls) {
  * @param {String} cls
  */
 export function addClass(ele, cls) {
-  if (!hasClass(ele, cls)) ele.className += ' ' + cls
+  if (!hasClass(ele, cls)) ele.className += " " + cls;
 }
 
 /**
@@ -316,8 +317,8 @@ export function addClass(ele, cls) {
  */
 export function removeClass(ele, cls) {
   if (hasClass(ele, cls)) {
-    const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
-    ele.className = ele.className.replace(reg, ' ')
+    const reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
+    ele.className = ele.className.replace(reg, " ");
   }
 }
 
@@ -328,19 +329,19 @@ export function removeClass(ele, cls) {
  * @param {Number} width
  */
 export function imgZoom(src, width = 200) {
-  const info = getImageInfo(src)
+  const info = getImageInfo(src);
 
   if (info.width < width) {
     return {
       width: `${info.width}px`,
       height: `${info.height}px`,
-    }
+    };
   }
 
   return {
-    width: width + 'px',
-    height: parseInt(info.height / (info.width / width)) + 'px',
-  }
+    width: width + "px",
+    height: parseInt(info.height / (info.width / width)) + "px",
+  };
 }
 
 /**
@@ -352,7 +353,7 @@ export function imgZoom(src, width = 200) {
 export function getSelection() {
   return window.getSelection
     ? window.getSelection().toString()
-    : document.selection.createRange().text
+    : document.selection.createRange().text;
 }
 
 /**
@@ -362,23 +363,23 @@ export function getSelection() {
  * @param {Function} callback 复制成功回调方法
  */
 export const copyTextToClipboard = (value, callback) => {
-  let textArea = document.createElement('textarea')
-  textArea.style.background = 'transparent'
-  textArea.value = value
+  let textArea = document.createElement("textarea");
+  textArea.style.background = "transparent";
+  textArea.value = value;
 
-  document.body.appendChild(textArea)
+  document.body.appendChild(textArea);
 
-  textArea.select()
+  textArea.select();
 
   try {
-    document.execCommand('copy')
-    if (callback) callback()
+    document.execCommand("copy");
+    if (callback) callback();
   } catch (err) {
-    this.$message.error('Oops, unable to copy')
+    this.$message.error("Oops, unable to copy");
   }
 
-  document.body.removeChild(textArea)
-}
+  document.body.removeChild(textArea);
+};
 
 /**
  * 隐藏用户手机号中间四位
@@ -386,7 +387,7 @@ export const copyTextToClipboard = (value, callback) => {
  * @param {String} phone  手机号
  */
 export function hidePhone(phone) {
-  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
 }
 
 /**
@@ -394,69 +395,69 @@ export function hidePhone(phone) {
  *
  * @param {Object} datetime
  */
-export function beautifyTime(datetime = '') {
+export function beautifyTime(datetime = "") {
   if (datetime == null) {
-    return ''
+    return "";
   }
 
-  datetime = datetime.replace(/-/g, '/')
+  datetime = datetime.replace(/-/g, "/");
 
-  let time = new Date()
-  let outTime = new Date(datetime)
+  let time = new Date();
+  let outTime = new Date(datetime);
   if (/^[1-9]\d*$/.test(datetime)) {
-    outTime = new Date(parseInt(datetime) * 1000)
+    outTime = new Date(parseInt(datetime) * 1000);
   }
 
   if (time.getTime() < outTime.getTime()) {
-    return parseTime(outTime, '{y}/{m}/{d}')
+    return parseTime(outTime, "{y}/{m}/{d}");
   }
 
   if (time.getFullYear() != outTime.getFullYear()) {
-    return parseTime(outTime, '{y}/{m}/{d}')
+    return parseTime(outTime, "{y}/{m}/{d}");
   }
 
   if (time.getMonth() != outTime.getMonth()) {
-    return parseTime(outTime, '{m}/{d}')
+    return parseTime(outTime, "{m}/{d}");
   }
 
   if (time.getDate() != outTime.getDate()) {
-    let day = outTime.getDate() - time.getDate()
+    let day = outTime.getDate() - time.getDate();
     if (day == -1) {
-      return parseTime(outTime, '昨天 {h}:{i}')
+      return parseTime(outTime, "昨天 {h}:{i}");
     }
 
     if (day == -2) {
-      return parseTime(outTime, '前天 {h}:{i}')
+      return parseTime(outTime, "前天 {h}:{i}");
     }
 
-    return parseTime(outTime, '{m}-{d}')
+    return parseTime(outTime, "{m}-{d}");
   }
 
   if (time.getHours() != outTime.getHours()) {
-    return parseTime(outTime, '{h}:{i}')
+    return parseTime(outTime, "{h}:{i}");
   }
 
-  let minutes = outTime.getMinutes() - time.getMinutes()
+  let minutes = outTime.getMinutes() - time.getMinutes();
   if (minutes == 0) {
-    return '刚刚'
+    return "刚刚";
   }
 
-  minutes = Math.abs(minutes)
-  return `${minutes}分钟前`
+  minutes = Math.abs(minutes);
+  return `${minutes}分钟前`;
 }
 
 export function getSort(fn) {
-  return function(a, b) {
-    let ret = 0
+  return function (a, b) {
+    let ret = 0;
 
     if (fn.call(this, a, b)) {
-      ret = -1
+      ret = -1;
     } else if (fn.call(this, b, a)) {
-      ret = 1
+      ret = 1;
     }
 
-    return ret
-  }
+    return ret;
+  };
 }
 
 /**
@@ -465,16 +466,16 @@ export function getSort(fn) {
  * @param {*} arr
  */
 export function getMutipSort(arr) {
-  return function(a, b) {
-    let tmp
-    let i = 0
+  return function (a, b) {
+    let tmp;
+    let i = 0;
 
     do {
-      tmp = arr[i++](a, b)
-    } while (tmp == 0 && i < arr.length)
+      tmp = arr[i++](a, b);
+    } while (tmp == 0 && i < arr.length);
 
-    return tmp
-  }
+    return tmp;
+  };
 }
 
 /**
@@ -483,12 +484,13 @@ export function getMutipSort(arr) {
  * @param {String} text 文本
  * @param {String} color 超链接颜色
  */
-export function textReplaceLink(text, color = '#409eff') {
-  let exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+export function textReplaceLink(text, color = "#409eff") {
+  let exp =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
   return text.replace(
     exp,
     `<a href='$1' target="_blank" style="color:${color};text-decoration: revert;">$1</a >`
-  )
+  );
 }
 
 /**
@@ -500,23 +502,23 @@ export function textReplaceLink(text, color = '#409eff') {
  * @returns
  */
 export function debounce(func, wait, immediate) {
-  let timeout
+  let timeout;
 
-  return function() {
-    let context = this
-    let args = arguments
+  return function () {
+    let context = this;
+    let args = arguments;
 
-    if (timeout) clearTimeout(timeout) // timeout 不为null
+    if (timeout) clearTimeout(timeout); // timeout 不为null
     if (immediate) {
-      let callNow = !timeout // 第一次会立即执行，以后只有事件执行后才会再次触发
-      timeout = setTimeout(function() {
-        timeout = null
-      }, wait)
-      if (callNow) func.apply(context, args)
+      let callNow = !timeout; // 第一次会立即执行，以后只有事件执行后才会再次触发
+      timeout = setTimeout(function () {
+        timeout = null;
+      }, wait);
+      if (callNow) func.apply(context, args);
     } else {
-      timeout = setTimeout(function() {
-        func.apply(context, args)
-      }, wait)
+      timeout = setTimeout(function () {
+        func.apply(context, args);
+      }, wait);
     }
-  }
+  };
 }

@@ -60,7 +60,7 @@ class SocketInstance {
    */
   registerEvents() {
     this.socket.on("event_talk", (data) => {
-      console.log("接收到消息", data);
+      console.log("接收到消息,event_talk", data);
       new TalkEvent(data).handle();
     });
 

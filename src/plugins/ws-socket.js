@@ -64,6 +64,8 @@ class WsSocket {
    * @param {Function} callBack 回调方法
    */
   on(event, callBack) {
+    // 对应 socket-instance.js
+    console.log("事件绑定", event, callBack);
     this.onCallBacks[event] = callBack;
     return this;
   }
@@ -128,7 +130,7 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onParse(evt) {
-    let res = JSON.parse(evt.data).result;
+    const res = JSON.parse(evt.data).result;
     return res;
   }
 
@@ -179,11 +181,12 @@ class WsSocket {
    */
   onMessage(evt) {
     let result = this.onParse(evt);
-    console.log("接收消息", result);
-    console.log(result);
+    console.log("接收消息", result, "color:red");
     // 判断消息事件是否被绑定
+    // event_talk;
 
-    // this.onCallBacks[result.event](result.result);
+    // 指定推送消息
+    this.onCallBacks["event_talk"](result);
   }
 
   /**

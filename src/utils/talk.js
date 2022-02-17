@@ -55,10 +55,7 @@ export function formatTalkItem(params) {
  * @param {Integer} receiver_id 接收者ID
  */
 export function toTalk(talk_type, receiver_id) {
-  ServeCreateTalkList({
-    talk_type,
-    receiver_id,
-  }).then(({ code, data }) => {
+  ServeCreateTalkList(receiver_id).then(({ code, data }) => {
     console.log("ServeCreateTalkList", data);
     if (code == 200) {
       sessionStorage.setItem(KEY_INDEX_NAME, `${talk_type}_${receiver_id}`);
