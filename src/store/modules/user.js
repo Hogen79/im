@@ -1,6 +1,6 @@
-import { setUserInfo, getUserInfo, removeAll, getToken } from "@/utils/auth";
+import { setUserInfo, getUserInfo, getToken } from "@/utils/auth";
 
-import { ServeLogout } from "@/api/user";
+// import { ServeLogout } from "@/api/user";
 
 let state = {
   // 用户ID
@@ -60,10 +60,10 @@ const User = {
     // 退出登录处理操作
     ACT_USER_LOGOUT({ commit }) {
       commit("USER_LOGOUT");
-      ServeLogout().finally(() => {
-        removeAll();
-        location.reload();
-      });
+      // ServeLogout().finally(() => {
+      //   removeAll();
+      //   location.reload();
+      // });
     },
   },
 };

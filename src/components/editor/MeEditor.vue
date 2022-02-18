@@ -7,19 +7,20 @@
             <i class="iconfont icon-icon_im_face" style="font-size: 15px" />
             <p class="tip-title">表情符号</p>
           </li>
-          <li @click="codeBlock.isShow = true">
+          <!-- <li @click="codeBlock.isShow = true">
             <i class="iconfont icon-daima" />
             <p class="tip-title">代码片段</p>
           </li>
           <li @click="recorder = true">
             <i class="el-icon-headset" />
             <p class="tip-title">语音消息</p>
-          </li>
-          <li @click="$refs.restFile.click()">
+          </li> -->
+          <!-- #TODO 发图片功能暂时隐藏 此处会涉及到token过期 -->
+          <!-- <li @click="$refs.restFile.click()">
             <i class="el-icon-picture-outline-round" />
             <p class="tip-title">图片</p>
-          </li>
-          <li @click="$refs.restFile2.click()">
+          </li> -->
+          <!-- <li @click="$refs.restFile2.click()">
             <i class="el-icon-folder" />
             <p class="tip-title">附件</p>
           </li>
@@ -30,7 +31,7 @@
           <li v-show="isGroupTalk" @click="vote.isShow = true">
             <i class="el-icon-s-data" />
             <p class="tip-title">发起投票</p>
-          </li>
+          </li> -->
 
           <p class="text-tips no-select">
             <span>按Enter发送 / Shift+Enter 换行</span>
@@ -121,7 +122,7 @@
       v-if="vote.isShow"
       @close="
         () => {
-          this.vote.isShow = false
+          this.vote.isShow = false;
         }
       "
     />
@@ -129,23 +130,23 @@
 </template>
 
 <script>
-import MeEditorEmoticon from './MeEditorEmoticon'
-import MeEditorFileManage from './MeEditorFileManage'
-import MeEditorImageView from './MeEditorImageView'
-import MeEditorRecorder from './MeEditorRecorder'
-import MeEditorVote from './MeEditorVote'
-import TalkCodeBlock from '@/components/chat/TalkCodeBlock'
-import { getPasteImgs, getDragPasteImg } from '@/utils/editor'
-import { findTalk } from '@/utils/talk'
+import MeEditorEmoticon from "./MeEditorEmoticon";
+import MeEditorFileManage from "./MeEditorFileManage";
+import MeEditorImageView from "./MeEditorImageView";
+import MeEditorRecorder from "./MeEditorRecorder";
+import MeEditorVote from "./MeEditorVote";
+import TalkCodeBlock from "@/components/chat/TalkCodeBlock";
+import { getPasteImgs, getDragPasteImg } from "@/utils/editor";
+import { findTalk } from "@/utils/talk";
 
 import {
   ServeSendTalkCodeBlock,
   ServeSendTalkImage,
   ServeSendEmoticon,
-} from '@/api/chat'
+} from "@/api/chat";
 
 export default {
-  name: 'MeEditor',
+  name: "MeEditor",
   components: {
     MeEditorEmoticon,
     MeEditorFileManage,
@@ -156,22 +157,22 @@ export default {
   },
   computed: {
     talkUser() {
-      return this.$store.state.dialogue.index_name
+      return this.$store.state.dialogue.index_name;
     },
     isGroupTalk() {
-      return this.$store.state.dialogue.talk_type == 2
+      return this.$store.state.dialogue.talk_type == 2;
     },
   },
   watch: {
     talkUser(n_index_name) {
-      this.$refs.filesManager.clear()
-      this.editorText = this.getDraftText(n_index_name)
+      this.$refs.filesManager.clear();
+      this.editorText = this.getDraftText(n_index_name);
     },
   },
   data() {
     return {
       // 当前编辑的内容
-      editorText: '',
+      editorText: "",
 
       // 图片查看器相关信息
       imageViewer: {
@@ -200,181 +201,178 @@ export default {
 
       // 发送间隔时间（默认1秒）
       interval: 1000,
-    }
+    };
   },
   methods: {
-    // 读取对话编辑草稿信息
+    // 读取对话编辑草稿信息 并赋值给当前富文本
     getDraftText(index_name) {
-      return findTalk(index_name).draft_text || ''
+      console.log("findTalk(index_name)", findTalk(index_name));
+      return findTalk(index_name)?.draft_text || "";
     },
 
     //复制粘贴图片回调方法
     pasteImage(e) {
-      let files = getPasteImgs(e)
-      if (files.length == 0) return
+      let files = getPasteImgs(e);
+      if (files.length == 0) return;
 
-      this.openImageViewer(files[0])
+      this.openImageViewer(files[0]);
     },
 
     //拖拽上传图片回调方法
     dragPasteImage(e) {
-      let files = getDragPasteImg(e)
-      if (files.length == 0) return
+      let files = getDragPasteImg(e);
+      if (files.length == 0) return;
 
-      this.openImageViewer(files[0])
+      this.openImageViewer(files[0]);
     },
 
     inputEvent(e) {
-      this.$emit('keyboard-event', e.target.value)
+      this.$emit("keyboard-event", e.target.value);
     },
 
     // 键盘按下监听事件
     keydownEvent(e) {
-      if (e.keyCode == 13 && this.editorText == '') {
-        e.preventDefault()
+      if (e.keyCode == 13 && this.editorText == "") {
+        e.preventDefault();
       }
 
       // 回车发送消息
-      if (e.keyCode == 13 && e.shiftKey == false && this.editorText != '') {
-        let currentTime = new Date().getTime()
+      if (e.keyCode == 13 && e.shiftKey == false && this.editorText != "") {
+        let currentTime = new Date().getTime();
 
         if (this.sendtime > 0) {
           // 判断 1秒内只能发送一条消息
           if (currentTime - this.sendtime < this.interval) {
-            e.preventDefault()
-            return false
+            e.preventDefault();
+            return false;
           }
         }
 
-        this.$emit('send', this.editorText)
-        this.editorText = ''
-        this.sendtime = currentTime
-        e.preventDefault()
+        this.$emit("send", this.editorText);
+        this.editorText = "";
+        this.sendtime = currentTime;
+        e.preventDefault();
       }
     },
 
     // 选择图片文件后回调方法
     uploadImageChange(e) {
-      this.openImageViewer(e.target.files[0])
-      this.$refs.restFile.value = null
+      this.openImageViewer(e.target.files[0]);
+      this.$refs.restFile.value = null;
     },
 
     // 选择文件回调事件
     uploadFileChange(e) {
-      let maxsize = 100 * 1024 * 1024
+      let maxsize = 100 * 1024 * 1024;
       if (e.target.files.length == 0) {
-        return false
+        return false;
       }
 
-      let file = e.target.files[0]
+      let file = e.target.files[0];
       if (/\.(gif|jpg|jpeg|png|webp|GIF|JPG|PNG|WEBP)$/.test(file.name)) {
-        this.openImageViewer(file)
-        return
+        this.openImageViewer(file);
+        return;
       }
 
       if (file.size > maxsize) {
         this.$notify.info({
-          title: '消息',
-          message: '上传文件不能大于100M',
-        })
-        return
+          title: "消息",
+          message: "上传文件不能大于100M",
+        });
+        return;
       }
 
-      this.filesManager.isShow = true
-      this.$refs.restFile2.value = null
-      this.$refs.filesManager.upload(file)
+      this.filesManager.isShow = true;
+      this.$refs.restFile2.value = null;
+      this.$refs.filesManager.upload(file);
     },
 
     // 打开图片查看器
     openImageViewer(file) {
-      this.imageViewer.isShow = true
-      this.imageViewer.file = file
+      this.imageViewer.isShow = true;
+      this.imageViewer.file = file;
     },
 
     // 代码块编辑器确认完成回调事件
     confirmCodeBlock(data) {
-      const { talk_type, receiver_id } = this.$store.state.dialogue
+      const { talk_type, receiver_id } = this.$store.state.dialogue;
       ServeSendTalkCodeBlock({
         talk_type,
         receiver_id,
         code: data.code,
         lang: data.language,
-      }).then(res => {
+      }).then((res) => {
         if (res.code == 200) {
-          this.codeBlock.isShow = false
+          this.codeBlock.isShow = false;
         } else {
           this.$notify({
-            title: '友情提示',
+            title: "友情提示",
             message: res.message,
-            type: 'warning',
-          })
+            type: "warning",
+          });
         }
-      })
+      });
     },
 
     // 确认上传图片消息回调事件
     confirmUploadImage() {
-      const { talk_type, receiver_id } = this.$store.state.dialogue
+      let fileData = new FormData();
+      fileData.append("file", this.imageViewer.file);
 
-      let fileData = new FormData()
-      fileData.append('talk_type', talk_type)
-      fileData.append('receiver_id', receiver_id)
-      fileData.append('image', this.imageViewer.file)
-
-      let ref = this.$refs.imageViewer
+      let ref = this.$refs.imageViewer;
 
       ServeSendTalkImage(fileData)
-        .then(res => {
-          ref.loading = false
+        .then((res) => {
+          ref.loading = false;
           if (res.code == 200) {
-            ref.closeBox()
+            ref.closeBox();
           } else {
             this.$notify({
-              title: '友情提示',
+              title: "友情提示",
               message: res.message,
-              type: 'warning',
-            })
+              type: "warning",
+            });
           }
         })
         .finally(() => {
-          ref.loading = false
-        })
+          ref.loading = false;
+        });
     },
 
     // 选中表情包回调事件
     selecteEmoticon(data) {
       if (data.type == 1) {
-        let value = this.editorText
-        let el = this.$refs.textarea
-        let startPos = el.selectionStart
-        let endPos = el.selectionEnd
+        let value = this.editorText;
+        let el = this.$refs.textarea;
+        let startPos = el.selectionStart;
+        let endPos = el.selectionEnd;
         let newValue =
           value.substring(0, startPos) +
           data.value +
-          value.substring(endPos, value.length)
+          value.substring(endPos, value.length);
 
-        this.editorText = newValue
+        this.editorText = newValue;
 
         if (el.setSelectionRange) {
           setTimeout(() => {
-            let index = startPos + data.value.length
-            el.setSelectionRange(index, index)
-            el.focus()
-          }, 0)
+            let index = startPos + data.value.length;
+            el.setSelectionRange(index, index);
+            el.focus();
+          }, 0);
         }
       } else {
-        const { talk_type, receiver_id } = this.$store.state.dialogue
+        const { talk_type, receiver_id } = this.$store.state.dialogue;
         ServeSendEmoticon({
           talk_type,
           receiver_id,
           emoticon_id: data.value,
-        })
+        });
       }
 
-      this.$refs.popoverEmoticon.doClose()
+      this.$refs.popoverEmoticon.doClose();
     },
   },
-}
+};
 </script>
 <style scoped>
 .editor-container {

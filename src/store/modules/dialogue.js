@@ -9,7 +9,18 @@ export default {
     is_robot: 0,
 
     // 聊天记录
-    records: [],
+    records: [
+      {
+        id: "",
+        createTime: "",
+        toUser: "",
+        isRead: false,
+        messageType: "",
+        talkId: "",
+        text: "",
+        float: "",
+      },
+    ],
 
     // 对话索引（聊天对话的唯一索引）
     index_name: null,
@@ -17,7 +28,7 @@ export default {
   mutations: {
     // 更新对话
     UPDATE_DIALOGUE_MESSAGE(state, resource) {
-      console.log("更新对话", resource);
+      console.log("更新对话", state);
       state.records = [];
       state.talk_type = parseInt(resource.talk_type);
       state.receiver_id = parseInt(resource.receiver_id);
@@ -30,9 +41,21 @@ export default {
       state.index_name = (resource.talk_type || 1) + "_" + resource.receiver_id;
     },
 
-    // 数组头部压入对话记录
+    // 数组头部压入对话记录1494593861786271744 1494593778193793024
     UNSHIFT_DIALOGUE(state, records) {
+      console.log("%c 数组头部压入对话记录", "color:green");
+      console.log("state", state);
+      console.log("records", records);
+
+      // if (state.records !== []) {
+      //   records.forEach((element) => state.records.unshift(element));
+      // } else {
+      //   state.records.unshift(...records);
+      // }
+
       state.records.unshift(...records);
+
+      // }
     },
 
     // 推送对话记录

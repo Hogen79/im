@@ -122,7 +122,7 @@
   </div>
 </template>
 <script>
-import { ServeSearchUser } from "@/api/user";
+// import { ServeSearchUser } from "@/api/user";
 import { ServeCreateContact, ServeEditContactRemark } from "@/api/contacts";
 import { toTalk } from "@/utils/talk";
 
@@ -176,7 +176,7 @@ export default {
     };
   },
   created() {
-    this.loadUserDetail();
+    // this.loadUserDetail();
   },
   methods: {
     close() {
@@ -192,16 +192,16 @@ export default {
     },
 
     // 获取用户信息
-    loadUserDetail() {
-      ServeSearchUser({
-        user_id: this.user_id,
-      }).then((res) => {
-        if (res.code == 200) {
-          this.detail.user_id = res.data.id;
-          Object.assign(this.detail, res.data);
-        }
-      });
-    },
+    // loadUserDetail() {
+    //   ServeSearchUser({
+    //     user_id: this.user_id,
+    //   }).then((res) => {
+    //     if (res.code == 200) {
+    //       this.detail.user_id = res.data.id;
+    //       Object.assign(this.detail, res.data);
+    //     }
+    //   });
+    // },
 
     // 发送添加好友申请
     sendApply() {

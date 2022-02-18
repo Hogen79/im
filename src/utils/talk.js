@@ -39,6 +39,10 @@ export function formatTalkItem(params) {
     lastTalkTime: "",
     name: "",
     top: false,
+    unread_num: 0, //未读消息
+    is_online: 0, //是否在线
+    draft_text: "", //草稿
+    msg_text: "", //存储的消息
     userId: "",
   };
 

@@ -52,6 +52,7 @@ class Talk extends Base {
    * @returns
    */
   isCurrSender() {
+    console.log("sender_id", this.sender_id);
     return this.sender_id == this.getAccountId();
   }
 
@@ -87,7 +88,7 @@ class Talk extends Base {
    * 获取聊天列表左侧的对话信息
    */
   getTalkText() {
-    let text = this.resource.content;
+    let text = this.resource.content || this.resource.text;
     switch (this.resource.msg_type) {
       case 2:
         let file_type = this.resource.file.file_type;
@@ -122,9 +123,8 @@ class Talk extends Base {
     //   return this.addTalkItem();
     // }
 
-    // let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id);
-    this.insertTalkRecord();
-    return;
+    let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id);
+
     // 判断当前是否正在和好友对话
     if (isTrue) {
       this.insertTalkRecord();
@@ -218,20 +218,22 @@ class Talk extends Base {
         el.scrollTop = el.scrollHeight;
       });
     } else {
+      console.log("%c SET_TLAK_UNREAD_MESSAGE %c", "color:red");
       store.commit("SET_TLAK_UNREAD_MESSAGE", {
         content: this.getTalkText(),
         nickname: record.name,
       });
     }
-    console.log("%准备更新...UPDATE_TALK_ITEM%", "color:red");
+    console.log("%c 准备更新...UPDATE_TALK_ITEM ", "color:red");
 
     store.commit("UPDATE_TALK_ITEM", {
       index_name: this.getIndexName(),
-      msg_text: this.getTalkText(),
+      msg_text: this.getTalkText() || record.text,
       updated_at: parseTime(new Date()),
     });
 
     if (this.talk_type == 1 && this.getAccountId() !== this.sender_id) {
+      console.log("%c 清除 未读数...ServeClearTalkUnreadNum ", "color:blue");
       ServeClearTalkUnreadNum({
         talk_type: 1,
         receiver_id: this.sender_id,
@@ -243,6 +245,7 @@ class Talk extends Base {
    * 更新对话列表记录
    */
   updateTalkItem() {
+    console.log("%c 更新对话列表记录", "color:#32ccbc");
     let store = this.getStoreInstance();
 
     store.commit("INCR_UNREAD_NUM");

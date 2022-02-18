@@ -22,13 +22,13 @@
               <i class="el-icon-loading" /> 正在加载数据中...
             </span>
             <span
-              v-else-if="loadRecord.status == 1"
+              v-if="loadRecord.status == 1"
               class="pointer color-blue"
               @click="loadChatRecords"
             >
               <i class="el-icon-bottom" /> 查看更多消息...
             </span>
-            <span v-else> 没有更多消息了... </span>
+            <span v-if="loadRecord.status == 2"> 没有更多消息了... </span>
           </div>
 
           <!-- 消息主体 -->
@@ -97,14 +97,20 @@
                   </span>
 
                   <!-- 文本消息 -->
-                  <text-message
+
+                  <div
                     v-if="item.messageType == 'MESSAGE'"
-                    :content="item.text"
-                    :float="item.float"
-                    :full-width="false"
-                    :arrow="true"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  />
+                    class="text-message"
+                    :class="{
+                      left: item.float == 'left',
+                      right: item.float == 'right',
+                    }"
+                  >
+                    <div class="arrow"></div>
+                    <pre v-html="textReplaceEmoji(item.text)" />
+                  </div>
+
+                  <!-- {{ item.text }} -->
 
                   <!-- 图片消息 -->
                   <!-- <image-message
@@ -112,66 +118,6 @@
                     :src="item.file.file_url"
                     @contextmenu.native="onCopy(idx, item, $event)"
                   /> -->
-
-                  <!-- 音频文件预留 -->
-                  <!-- <audio-message
-                    v-else-if="item.messageType == 2 && item.file.file_type == 2"
-                    :src="item.file.file_url"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  /> -->
-
-                  <!-- 视频文件预留 -->
-                  <!-- <video-message
-                    v-else-if="item.messageType == 2 && item.file.file_type == 3"
-                    :src="item.file.file_url"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  /> -->
-
-                  <!-- 文件消息 -->
-                  <!-- <file-message
-                    v-else-if="item.messageType == 2 && item.file.file_type == 4"
-                    :file="item.file"
-                    :record_id="item.id"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  /> -->
-
-                  <!-- 会话记录消息 -->
-                  <!-- <forward-message
-                    v-else-if="item.messageType == 3"
-                    :forward="item.forward"
-                    :record_id="item.id"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  /> -->
-
-                  <!-- 代码块消息 -->
-                  <!-- <code-message
-                    v-else-if="item.messageType == 4"
-                    :code="item.code_block.code"
-                    :lang="item.code_block.code_lang"
-                    :maxwidth="true"
-                    @contextmenu.native="onCopy(idx, item, $event)"
-                  /> -->
-
-                  <!-- 投票消息 -->
-                  <!-- <vote-message
-                    v-else-if="item.messageType == 5"
-                    :record_id="item.id"
-                    :vote="item.vote"
-                  /> -->
-
-                  <!-- 登录消息 -->
-                  <!-- <login-message
-                    v-else-if="item.messageType == 8"
-                    :detail="item.login"
-                  /> -->
-
-                  <!-- 未知消息 -->
-                  <!-- <div class="unknown-msg" v-else>
-                    未知消息类型[{{ item.messageType }}]
-                  </div> -->
-
-                  <!-- 消息引用(预留) -->
-                  <!-- <reply-message /> -->
                 </div>
               </main>
             </div>
@@ -270,6 +216,9 @@
   </div>
 </template>
 <script>
+import { textReplaceLink } from "@/utils/functions";
+import { textReplaceEmoji } from "@/utils/emojis";
+
 import { mapState } from "vuex";
 import TalkSearchRecord from "@/components/chat/TalkSearchRecord";
 import MeEditor from "@/components/editor/MeEditor";
@@ -318,6 +267,8 @@ export default {
   data() {
     return {
       // 记录加载相关参数
+      textReplaceEmoji,
+      textReplaceLink,
       loadRecord: {
         status: 0,
         minRecord: 0,
@@ -351,6 +302,7 @@ export default {
       tipsBoard: false,
     };
   },
+
   computed: {
     ...mapState({
       unreadMessage: (state) => state.talks.unreadMessage,
@@ -507,45 +459,46 @@ export default {
       const user_id = this.id;
       const data = {
         num: 10,
-        lastMessageId: "",
+        lastMessageId: this.records.length ? this.records[0].id : "",
         talkId: this.params.talkId,
       };
-      // this.loadRecord.status = 0
+      console.log(this.records[0]?.id);
+      this.loadRecord.status = 0;
       let el = document.getElementById("lumenChatPanel");
       let scrollHeight = el.scrollHeight;
-      ServeTalkRecords(data)
-        .then((res) => {
-          // 防止点击切换过快消息返回延迟，导致信息错误
-          console.log("读取历史数据", res);
-          const records = res.result.map((item) => {
-            item.float = "center";
-            if (item.toUser > 0) {
-              item.float = item.fromUser == user_id ? "right" : "left";
-            }
-            return item;
-          });
-          // 判断是否是初次加载
-          if (data.record_id == 0) {
-            this.$store.commit("SET_DIALOGUE", []);
+      ServeTalkRecords(data).then((res) => {
+        // 防止点击切换过快消息返回延迟，导致信息错误
+        // console.log("读取历史数据", res);
+        const records = res.result.map((item) => {
+          let key = new Date().getTime();
+          item.float = "center";
+          if (item.toUser > 0) {
+            item.float = item.fromUser == user_id ? "right" : "left";
           }
-
-          this.$store.commit("UNSHIFT_DIALOGUE", records.reverse());
-
-          this.loadRecord.status = records.length >= res.data.limit ? 1 : 2;
-
-          this.loadRecord.minRecord = res.data.record_id;
-
-          this.$nextTick(() => {
-            if (data.record_id == 0) {
-              el.scrollTop = el.scrollHeight;
-            } else {
-              el.scrollTop = el.scrollHeight - scrollHeight;
-            }
-          });
-        })
-        .catch(() => {
-          this.loadRecord.status = 1;
+          return { ...item, [key]: key };
         });
+        // 判断是否是初次加载
+        if (data.record_id == 0) {
+          this.$store.commit("SET_DIALOGUE", []);
+        }
+
+        this.$store.commit("UNSHIFT_DIALOGUE", records.reverse());
+
+        records.length
+          ? (this.loadRecord.status = 1)
+          : (this.loadRecord.status = 2);
+
+        console.log("this.loadRecord.status", this.loadRecord.status);
+        this.loadRecord.minRecord = res.data.record_id;
+
+        this.$nextTick(() => {
+          if (data.record_id == 0) {
+            el.scrollTop = el.scrollHeight;
+          } else {
+            el.scrollTop = el.scrollHeight - scrollHeight;
+          }
+        });
+      });
     },
 
     // 多选处理方式
@@ -1090,6 +1043,62 @@ export default {
         border-color: #409eff;
       }
     }
+  }
+}
+
+@bg-left-color: #f5f5f5;
+@bg-right-color: #1ebafc;
+
+.text-message {
+  position: relative;
+  min-width: 30px;
+  min-height: 30px;
+  border-radius: 5px;
+  padding: 5px;
+
+  .arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    border: 5px solid;
+    top: 6px;
+    left: -10px;
+  }
+
+  &.max-width {
+    max-width: calc(100% - 50px);
+  }
+
+  &.left {
+    color: #3a3a3a;
+    background: @bg-left-color;
+
+    .arrow {
+      border-color: transparent @bg-left-color transparent transparent;
+    }
+  }
+
+  &.right {
+    color: #fff;
+    background: @bg-right-color;
+
+    .arrow {
+      right: -10px;
+      left: unset;
+      border-color: transparent transparent transparent @bg-right-color;
+    }
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow: hidden;
+    word-break: break-word;
+    word-wrap: break-word;
+    font-size: 15px;
+    padding: 3px 10px;
+    font-family: "Microsoft YaHei";
+    line-height: 25px;
   }
 }
 </style>

@@ -41,6 +41,11 @@ const Talk = {
 
     // 更新对话节点
     UPDATE_TALK_ITEM(state, resource) {
+      console.log("%c 更新对话节点", "color:#32c");
+      console.log("state", state);
+      console.log("resource", resource);
+
+      console.log("%c 更新对话节点结束", "color:#32c");
       let index = state.items.findIndex(
         (item) => item.userId === resource.index_name.split("_")[1]
       );
@@ -66,8 +71,13 @@ const Talk = {
 
     // 更新对话消息
     UPDATE_TALK_MESSAGE(state, resource) {
+      console.log("%c 更新对话消息", "color:green");
+
+      console.log("state", state);
+      console.log("resource", resource);
+      console.log("%c 更新对话结束", "color:green");
       for (let i in state.items) {
-        if (state.items[i].index_name === resource.index_name) {
+        if (state.items[i].userId === resource.index_name.split("_")[1]) {
           state.items[i].unread_num++;
           state.items[i].msg_text = resource.msg_text;
           state.items[i].updated_at = resource.updated_at;

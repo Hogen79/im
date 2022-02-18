@@ -6,7 +6,7 @@
         <el-aside width="320px" class="aside-box">
           <el-container class="full-height" direction="vertical">
             <!-- 搜索栏 -->
-            <el-header height="60px" class="header">
+            <!-- <el-header height="60px" class="header">
               <div class="from-search">
                 <el-input
                   v-model="input"
@@ -36,7 +36,7 @@
                   </div>
                 </transition>
               </div>
-            </el-header>
+            </el-header> -->
 
             <!-- 置顶栏 -->
             <el-header
@@ -106,7 +106,6 @@
                     class="talk-item pointer"
                     :class="{ active: activeIndex == index }"
                     @click="clickTab(item.userId, item, index)"
-                    @contextmenu.prevent="talkItemsMenu(item, $event)"
                   >
                     <div class="avatar-box">
                       <span v-show="!item.face">
@@ -301,6 +300,7 @@ export default {
   watch: {
     unreadNum(value) {
       clearInterval(this.interval);
+      console.log("%c 更新未读消息", "color:#32ccbc");
       this.$store.commit("SET_UNREAD_NUM", value);
 
       if (value > 0) {
@@ -439,16 +439,11 @@ export default {
       });
 
       this.$nextTick(() => {
+        console.log("已读");
         if (id == this.index_name) {
           this.$store.commit("UPDATE_TALK_ITEM", {
             id,
             unread_num: 0,
-          });
-
-          // 清空消息未读数(后期改成WebSocket发送消息)
-          ServeClearTalkUnreadNum({
-            talk_type: 1,
-            receiver_id: item.userId,
           });
         }
       });
