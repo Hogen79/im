@@ -62,9 +62,9 @@
         <el-popover
           ref="popoverEmoticon"
           placement="top-start"
-          width="500"
           trigger="click"
-          popper-class="no-padding"
+          width="300"
+          popper-class="no-padding el-popover-em"
         >
           <MeEditorEmoticon ref="editorEmoticon" @selected="selecteEmoticon" />
         </el-popover>
@@ -374,7 +374,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="less">
 .editor-container {
   height: 160px;
   width: 100%;

@@ -198,9 +198,8 @@
 
         <!-- 聊天面板容器 -->
         <el-main class="main-box ov-hidden full-height no-padding">
-          <WelcomeModule v-if="index_name == null" />
+          <!-- <WelcomeModule v-if="index_name == null" /> -->
           <TalkPanel
-            v-else
             class="full-height"
             :params="params"
             :is-online="isFriendOnline"
@@ -223,7 +222,6 @@ import TalkPanel from "@/components/chat/panel/TalkPanel";
 import UserSearch from "@/components/user/UserSearch";
 import {
   ServeGetTalkList,
-  ServeClearTalkUnreadNum,
   ServeDeleteTalkList,
   ServeTopTalkList,
   ServeSetNotDisturb,
