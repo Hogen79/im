@@ -95,7 +95,7 @@
                 </p>
 
                 <p v-show="loadStatus === 1 && talkNum > 0" class="main-menu">
-                  <span class="title">IM ({{ talkNum }})</span>
+                  <span class="title">IM({{ talkNum }})</span>
                 </p>
 
                 <!-- 对话列表 -->
@@ -223,7 +223,6 @@ import TalkPanel from "@/components/chat/panel/TalkPanel";
 import UserSearch from "@/components/user/UserSearch";
 import {
   ServeGetTalkList,
-  ServeClearTalkUnreadNum,
   ServeDeleteTalkList,
   ServeTopTalkList,
   ServeSetNotDisturb,
@@ -324,12 +323,13 @@ export default {
   beforeRouteUpdate(to, from, next) {
     let index_name = getCacheIndexName();
     if (index_name) this.clickTab(index_name);
-
     next();
+  },
+  beforeCreate() {
+    setToken(this.$route.query.token);
   },
   created() {
     this.loadChatList();
-    setToken(this.$route.query.token);
     if (this.$route.query.id) {
       this.createTalk(this.$route.query.id);
     }

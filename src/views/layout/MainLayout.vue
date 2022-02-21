@@ -16,25 +16,25 @@
               <span v-else>连接中...</span>
             </p>
           </el-header>
-          <el-main class="sidebar-menu">
-            <el-tooltip
-              content="我的消息"
-              placement="right"
-              :visible-arrow="false"
-            >
-              <router-link to="/message">
-                <div class="menu-items" :class="{ active: idx == 0 }">
-                  <i class="el-icon-chat-line-round" />
-                  <span v-show="unreadNum" class="notify"></span>
-                </div>
-              </router-link>
-            </el-tooltip>
-          </el-main>
-          <el-footer height="60px" class="fixed-sidebar">
-            <div class="menu-items" @click="logout">
-              <span class="logout">退出</span>
-            </div>
-          </el-footer>
+<!--          <el-main class="sidebar-menu">-->
+<!--            <el-tooltip-->
+<!--              content="我的消息"-->
+<!--              placement="right"-->
+<!--              :visible-arrow="false"-->
+<!--            >-->
+<!--              <router-link to="/message">-->
+<!--                <div class="menu-items" :class="{ active: idx == 0 }">-->
+<!--                  <i class="el-icon-chat-line-round" />-->
+<!--                  <span v-show="unreadNum" class="notify"></span>-->
+<!--                </div>-->
+<!--              </router-link>-->
+<!--            </el-tooltip>-->
+<!--          </el-main>-->
+<!--          <el-footer height="60px" class="fixed-sidebar">-->
+<!--            <div class="menu-items" @click="logout">-->
+<!--              <span class="logout">退出</span>-->
+<!--            </div>-->
+<!--          </el-footer>-->
         </el-container>
       </el-aside>
 

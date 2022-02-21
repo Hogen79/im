@@ -33,30 +33,30 @@
             <p class="tip-title">发起投票</p>
           </li> -->
 
-          <p class="text-tips no-select">
-            <span>按Enter发送 / Shift+Enter 换行</span>
-            <el-popover placement="top-end" width="600" trigger="click">
-              <div class="editor-books">
-                <div class="books-title">编辑说明:</div>
-                <p>
-                  1.
-                  支持上传QQ及微信截图，在QQ或微信中截图后使用Ctrl+v上传图片。
-                </p>
-                <p>
-                  2.
-                  支持浏览器及Word文档中的图片复制上传、复制后使用Ctrl+v上传图片。
-                </p>
-                <p>3. 支持图片拖拽上传。</p>
-                <p>4. 支持文件上传 ( 文件小于100M ) 。</p>
-                <p>5. 按Enter发送 / Shift+Enter 换行。</p>
-                <p>
-                  6.
-                  注意：当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败。
-                </p>
-              </div>
-              <i class="el-icon-info" slot="reference" />
-            </el-popover>
-          </p>
+<!--          <p class="text-tips no-select">-->
+<!--            <span>按Enter发送 / Shift+Enter 换行</span>-->
+<!--            <el-popover placement="top-end" width="600" trigger="click">-->
+<!--              <div class="editor-books">-->
+<!--                <div class="books-title">编辑说明:</div>-->
+<!--                <p>-->
+<!--                  1.-->
+<!--                  支持上传QQ及微信截图，在QQ或微信中截图后使用Ctrl+v上传图片。-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                  2.-->
+<!--                  支持浏览器及Word文档中的图片复制上传、复制后使用Ctrl+v上传图片。-->
+<!--                </p>-->
+<!--                <p>3. 支持图片拖拽上传。</p>-->
+<!--                <p>4. 支持文件上传 ( 文件小于100M ) 。</p>-->
+<!--                <p>5. 按Enter发送 / Shift+Enter 换行。</p>-->
+<!--                <p>-->
+<!--                  6.-->
+<!--                  注意：当文件正在上传时，请勿关闭网页或离开当前对话框，否则将导致文件停止上传或上传失败。-->
+<!--                </p>-->
+<!--              </div>-->
+<!--              <i class="el-icon-info" slot="reference" />-->
+<!--            </el-popover>-->
+<!--          </p>-->
         </ul>
 
         <el-popover

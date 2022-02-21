@@ -18,6 +18,9 @@ export default {
     // 加载用户相关设置信息，更新本地缓存
     loadUserSetting() {
       ServeGetUserSetting().then(({ code, result }) => {
+        console.error("---------------------")
+        console.error(result)
+        console.error("---------------------")
         if (code === 200) {
           this.$store.commit('UPDATE_USER_INFO', {
             id: result.id,
