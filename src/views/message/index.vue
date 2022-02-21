@@ -198,8 +198,9 @@
 
         <!-- 聊天面板容器 -->
         <el-main class="main-box ov-hidden full-height no-padding">
-          <!-- <WelcomeModule v-if="index_name == null" /> -->
+          <WelcomeModule v-if="index_name == null" />
           <TalkPanel
+            v-else
             class="full-height"
             :params="params"
             :is-online="isFriendOnline"
@@ -399,10 +400,10 @@ export default {
             items: result.map((item) => formatTalkItem(item)),
           });
 
+          // this.$nextTick(() => this.clickTab(index_name));
+
           let index_name = sessionStorage.getItem("send_message_index_name");
           if (index_name) {
-            this.$nextTick(() => this.clickTab(index_name));
-
             sessionStorage.removeItem("send_message_index_name");
           }
         })

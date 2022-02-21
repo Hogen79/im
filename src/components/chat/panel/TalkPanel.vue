@@ -464,8 +464,7 @@ export default {
       };
       console.log(this.records[0]?.id);
       this.loadRecord.status = 0;
-      let el = document.getElementById("lumenChatPanel");
-      let scrollHeight = el.scrollHeight;
+
       ServeTalkRecords(data).then((res) => {
         // 防止点击切换过快消息返回延迟，导致信息错误
         // console.log("读取历史数据", res);
@@ -477,26 +476,15 @@ export default {
           }
           return { ...item, [key]: key };
         });
-        // 判断是否是初次加载
-        if (data.record_id == 0) {
-          this.$store.commit("SET_DIALOGUE", []);
-        }
-
         this.$store.commit("UNSHIFT_DIALOGUE", records.reverse());
-
         records.length
           ? (this.loadRecord.status = 1)
           : (this.loadRecord.status = 2);
 
-        console.log("this.loadRecord.status", this.loadRecord.status);
-        this.loadRecord.minRecord = res.data.record_id;
+        let el = document.getElementById("lumenChatPanel");
 
         this.$nextTick(() => {
-          if (data.record_id == 0) {
-            el.scrollTop = el.scrollHeight;
-          } else {
-            el.scrollTop = el.scrollHeight - scrollHeight;
-          }
+          el.scrollTop = el.scrollHeight;
         });
       });
     },
