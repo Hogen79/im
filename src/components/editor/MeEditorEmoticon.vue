@@ -1,10 +1,6 @@
 <template>
   <div>
     <el-container class="container">
-      <el-header height="30px" class="no-padding header">
-        <span v-text="showTitle"></span>
-        <div class="addbtn" @click="systemEmojiBox = true">系统表情</div>
-      </el-header>
       <el-main class="no-padding main lum-scrollbar">
         <input
           type="file"

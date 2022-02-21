@@ -95,7 +95,7 @@
                 </p>
 
                 <p v-show="loadStatus === 1 && talkNum > 0" class="main-menu">
-                  <span class="title">消息记录 ({{ talkNum }})</span>
+                  <span class="title">IM ({{ talkNum }})</span>
                 </p>
 
                 <!-- 对话列表 -->

@@ -7,18 +7,6 @@ import { Notification } from "element-ui";
 export default {
   state: {
     items: [
-      {
-        emoticon_id: -1,
-        name: "QQ表情/符号表情",
-        url: require("@/assets/image/icon_face.png"),
-        list: [],
-      },
-      {
-        emoticon_id: 0,
-        name: "我的收藏",
-        url: require("@/assets/image/icon_heart.png"),
-        list: [],
-      },
     ],
   },
   mutations: {
