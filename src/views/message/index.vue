@@ -401,10 +401,10 @@ export default {
             items: result.map((item) => formatTalkItem(item)),
           });
 
+          // this.$nextTick(() => this.clickTab(index_name));
+
           let index_name = sessionStorage.getItem("send_message_index_name");
           if (index_name) {
-            this.$nextTick(() => this.clickTab(index_name));
-
             sessionStorage.removeItem("send_message_index_name");
           }
         })

@@ -46,16 +46,7 @@ export default {
       console.log("%c 数组头部压入对话记录", "color:green");
       console.log("state", state);
       console.log("records", records);
-
-      // if (state.records !== []) {
-      //   records.forEach((element) => state.records.unshift(element));
-      // } else {
-      //   state.records.unshift(...records);
-      // }
-
       state.records.unshift(...records);
-
-      // }
     },
 
     // 推送对话记录

@@ -123,8 +123,9 @@ class Talk extends Base {
     //   return this.addTalkItem();
     // }
 
-    let isTrue = this.isTalk(this.talk_type, this.receiver_id, this.sender_id);
+    let isTrue = this.isTalk(1, this.receiver_id, this.sender_id);
 
+    console.log("判断当前是否正在和好友对话", isTrue);
     // 判断当前是否正在和好友对话
     if (isTrue) {
       this.insertTalkRecord();
