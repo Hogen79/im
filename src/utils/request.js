@@ -41,9 +41,8 @@ request.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
     config.headers["accessToken"] = `${token}`;
+    return config;
   }
-
-  return config;
 }, errorHandler);
 
 // 响应拦截器

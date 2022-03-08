@@ -5,7 +5,17 @@
         <el-container class="full-height">
           <el-header height="118px" class="logo-header">
             <div class="user-login" v-popover:usercard>
-              <img :src="face" :onerror="defaultAvatar" />
+              <!-- <img :src="face" :onerror="defaultAvatar" /> -->
+              <div class="user-box">
+                <span v-show="!face">
+                  {{ name.substr(0, 1) }}
+                </span>
+                <img
+                  v-show="face"
+                  :src="face"
+                  :onerror="$store.state.defaultAvatar"
+                />
+              </div>
             </div>
             <p class="user-status">
               <span v-if="name">{{ name }}</span>
@@ -16,25 +26,25 @@
               <span v-else>连接中...</span>
             </p>
           </el-header>
-<!--          <el-main class="sidebar-menu">-->
-<!--            <el-tooltip-->
-<!--              content="我的消息"-->
-<!--              placement="right"-->
-<!--              :visible-arrow="false"-->
-<!--            >-->
-<!--              <router-link to="/message">-->
-<!--                <div class="menu-items" :class="{ active: idx == 0 }">-->
-<!--                  <i class="el-icon-chat-line-round" />-->
-<!--                  <span v-show="unreadNum" class="notify"></span>-->
-<!--                </div>-->
-<!--              </router-link>-->
-<!--            </el-tooltip>-->
-<!--          </el-main>-->
-<!--          <el-footer height="60px" class="fixed-sidebar">-->
-<!--            <div class="menu-items" @click="logout">-->
-<!--              <span class="logout">退出</span>-->
-<!--            </div>-->
-<!--          </el-footer>-->
+          <!--          <el-main class="sidebar-menu">-->
+          <!--            <el-tooltip-->
+          <!--              content="我的消息"-->
+          <!--              placement="right"-->
+          <!--              :visible-arrow="false"-->
+          <!--            >-->
+          <!--              <router-link to="/message">-->
+          <!--                <div class="menu-items" :class="{ active: idx == 0 }">-->
+          <!--                  <i class="el-icon-chat-line-round" />-->
+          <!--                  <span v-show="unreadNum" class="notify"></span>-->
+          <!--                </div>-->
+          <!--              </router-link>-->
+          <!--            </el-tooltip>-->
+          <!--          </el-main>-->
+          <!--          <el-footer height="60px" class="fixed-sidebar">-->
+          <!--            <div class="menu-items" @click="logout">-->
+          <!--              <span class="logout">退出</span>-->
+          <!--            </div>-->
+          <!--          </el-footer>-->
         </el-container>
       </el-aside>
 
@@ -108,7 +118,7 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" >
 .main-layout {
   position: fixed;
   width: 75%;
@@ -137,25 +147,6 @@ export default {
 
     .logo-header {
       padding: 0;
-      .user-login {
-        width: 50px;
-        height: 50px;
-        margin: 10px auto 0;
-        border-radius: 50%;
-        position: relative;
-        cursor: pointer;
-        overflow: hidden;
-        transition: ease-in 3s;
-
-        img {
-          width: 100%;
-          height: 100%;
-        }
-
-        &:hover {
-          transform: rotate(360deg);
-        }
-      }
 
       .user-status {
         text-align: center;
@@ -339,6 +330,48 @@ export default {
 @media screen and (max-width: 767px) {
   .side-edge {
     display: none !important;
+  }
+}
+.user-box {
+  margin: 20px auto 10px auto;
+  height: 35px;
+  width: 35px;
+  flex-shrink: 0;
+  background-color: #508afe;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: white;
+  user-select: none;
+  transition: ease 1s;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 3px;
+  }
+
+  .top-mask {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 25, 29, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  &:hover .top-mask {
+    display: flex;
   }
 }
 </style>

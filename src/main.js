@@ -18,7 +18,7 @@ import '@/icons'
 import '@/assets/css/global.less'
 
 Vue.config.productionTip = false
-
+Vue.mixin(MainMixin)  // 引入mixins
 const Instance = new Vue({
   router,
   store,

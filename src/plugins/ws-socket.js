@@ -157,6 +157,7 @@ class WsSocket {
     if (this.config.heartbeat.enabled) {
       clearInterval(this.config.heartbeat.setInterval);
     }
+    console.log("evt", evt);
 
     if (evt.code == 1006) {
       this.reconnect();

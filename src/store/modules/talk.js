@@ -36,6 +36,7 @@ const Talk = {
   mutations: {
     // 设置对话列表
     SET_TALK_ITEMS(state, resource) {
+      console.log("设置对话列表",resource.items)
       state.items = resource.items;
     },
 

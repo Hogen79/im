@@ -275,6 +275,7 @@ export default {
       talks: (state) => state.talks.items,
       index_name: (state) => state.dialogue.index_name,
       monitorFriendsStatus: (state) => state.notify.friendStatus,
+  
     }),
 
     // 计算置顶栏目的高度
@@ -297,6 +298,7 @@ export default {
     },
   },
   watch: {
+   
     unreadNum(value) {
       clearInterval(this.interval);
       console.log("%c 更新未读消息", "color:#32ccbc");
@@ -320,6 +322,7 @@ export default {
       });
     },
   },
+
   beforeRouteUpdate(to, from, next) {
     let index_name = getCacheIndexName();
     if (index_name) this.clickTab(index_name);
@@ -328,12 +331,18 @@ export default {
   beforeCreate() {
     setToken(this.$route.query.token);
   },
-  created() {
-    this.loadChatList();
-    if (this.$route.query.id) {
-      this.createTalk(this.$route.query.id);
-    }
+  async created() {
+  await  this.initialize();
+     await this.loadUserSetting();
+    /**
+     * 如果说有id 说明是用户点击 “联系客服” 进入的该页面
+     * 所以创建会话 并请求用户列表
+     * 如果没有id说明当前商家登录 直接请求用户列表
+     */
+
+   
   },
+
   mounted() {
     this.scrollEvent();
   },
@@ -347,8 +356,10 @@ export default {
     beautifyTime,
 
     //创建会话
-    createTalk(id) {
-      ServeCreateTalkList(id);
+    async createTalk(id) {
+      await ServeCreateTalkList(id);
+
+      await this.loadChatList();
     },
     // header 功能栏隐藏事件
     closeSubMenu() {
@@ -400,10 +411,10 @@ export default {
           this.$store.commit("SET_TALK_ITEMS", {
             items: result.map((item) => formatTalkItem(item)),
           });
-
-          // this.$nextTick(() => this.clickTab(index_name));
-
           let index_name = sessionStorage.getItem("send_message_index_name");
+          this.$nextTick(() => this.clickTab(index_name));
+          console.log("%c index_name", "color:red");
+          console.log(index_name);
           if (index_name) {
             sessionStorage.removeItem("send_message_index_name");
           }

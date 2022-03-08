@@ -117,14 +117,9 @@ class Talk extends Base {
       // 判断消息是否来自于我自己，否则会提示消息通知
       return !this.isCurrSender() && this.showMessageNocice();
     }
-
-    // 判断会话列表是否存在，不存在则创建
-    // if (findTalkIndex(this.getIndexName()) == -1) {
-    //   return this.addTalkItem();
-    // }
-
+    console.log("this.receiver_id", this.receiver_id);
+    console.log("this.sender_id", this.sender_id);
     let isTrue = this.isTalk(1, this.receiver_id, this.sender_id);
-
     console.log("判断当前是否正在和好友对话", isTrue);
     // 判断当前是否正在和好友对话
     if (isTrue) {
